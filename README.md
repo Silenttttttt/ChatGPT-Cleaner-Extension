@@ -6,7 +6,7 @@ This browser extension is designed to enhance the user experience on `chat.opena
 1. **Custom User Buttons**: Two main buttons are introduced:
 
 * `Provide full code`: Appends a standard request to the chat input for obtaining full, complete code from GPT-4.
-* `Cleanup Chat`: An instant way to manually clear older chat elements.
+* `Cleanup Chat`: An instant way to manually clear older chat elements. By default leaves only the last 30 messages.
 1. **Message Counter**: Keeps track of the number of messages exchanged with GPT-4. It resets the counter periodically, and provides a visual indication of the reset time.
 1. **Extension Toggle**: Allows you to activate or deactivate the extension's functionalities directly from the browser toolbar.
 ## File Breakdown:
