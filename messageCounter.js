@@ -22,41 +22,39 @@ const checkForErrorMessage = () => {
     return false;  // Return false if no error message is detected
 };
 
-// Function to display the message counter on the webpage
-const displayCounter = (messageCounter) => {
-    console.log(`Displaying counter: ${messageCounter}`);
+// Function to display the timer and message counter on the webpage
+const displayCounterAndTimer = () => {
+    console.log('Displaying counter and timer...');
     // Get the counter display element from the webpage
     const counterDisplay = document.getElementById('messageCounterDisplay');
+    const messageCounter = parseInt(localStorage.getItem('messageCounter') || "0");
+    
     if (counterDisplay) {
         // Calculate the time the counter will reset
         const resetTime = new Date(parseInt(localStorage.getItem('lastResetTime')) + RESET_INTERVAL);
         // Format the time in HH:MM:SS format
         const formattedTime = `${resetTime.getHours()}:${resetTime.getMinutes().toString().padStart(2, '0')}:${resetTime.getSeconds().toString().padStart(2, '0')}`;
         // Set the counter display element's text content with the current message count and reset time
-        counterDisplay.textContent = `Message exchanges: ${messageCounter}. Reset at: ${formattedTime}`;
+        counterDisplay.textContent = `Message count: ${messageCounter}. Reset at: ${formattedTime}.`;
     }
-    // Store the message counter value in the browser's local storage
-    localStorage.setItem('messageCounter', messageCounter);
 };
 
+
 // Timer function to periodically check and reset the counter
-const startTimer = (messageCounter) => {
+const startTimer = () => {
     console.log('Starting timer...');
+    
     // Function to check and reset the message counter based on time conditions
     const checkAndReset = () => {
         // Get the current time
         const currentTime = new Date().getTime();
         // Check if the time elapsed since the last reset exceeds the reset interval
-        if (currentTime - localStorage.getItem('lastResetTime') >= RESET_INTERVAL) {
+        if (currentTime - parseInt(localStorage.getItem('lastResetTime')) >= RESET_INTERVAL) {
             console.log('Time exceeded. Resetting counter.');
-            if (parseInt(localStorage.getItem('messageCounter') || "0") === 0) {
-                console.log('No messages. Resetting timer immediately.');
-                localStorage.setItem('lastResetTime', currentTime);
-            }
             // Reset the message counter to 0
-            messageCounter = 0;
-            displayCounter(messageCounter);
-            localStorage.setItem('lastResetTime', currentTime);
+            localStorage.setItem('messageCounter', "0");
+            localStorage.setItem('lastResetTime', currentTime.toString());
+            displayCounterAndTimer();
             return true;  // Return true indicating a reset happened
         }
         return false;  // Return false indicating no reset happened
@@ -64,7 +62,7 @@ const startTimer = (messageCounter) => {
 
     // Initial check for a reset on page load
     if (!checkAndReset()) {
-        const timeSinceLastReset = new Date().getTime() - localStorage.getItem('lastResetTime');
+        const timeSinceLastReset = new Date().getTime() - parseInt(localStorage.getItem('lastResetTime'));
         const remainingTime = RESET_INTERVAL - timeSinceLastReset;
 
         // Start a timer to check for reset after the remaining time from the last reset
@@ -82,8 +80,11 @@ const startTimer = (messageCounter) => {
 // Function to handle when a new response message is detected on the webpage
 const handleNewResponse = () => {
     if (!checkForErrorMessage()) {
-        let messageCounter = parseInt(localStorage.getItem('messageCounter') || "0") + 1;  // Increment the message counter by 1
-        displayCounter(messageCounter);
+        let messageCounter = parseInt(localStorage.getItem('messageCounter') || "0");
+        messageCounter++;  // Increment the message counter by 1
+        localStorage.setItem('messageCounter', messageCounter.toString());
+        
+        displayCounterAndTimer();
     }
 };
 
@@ -94,8 +95,11 @@ const handleButtonClick = (event) => {
     // Check if the clicked element or its closest parent is the "Save & Submit" button.
     if (targetElement.closest("button.btn-primary")) {
         console.log('Save & Submit button clicked. Incrementing counter.');
-        let messageCounter = parseInt(localStorage.getItem('messageCounter') || "0") + 1;
-        displayCounter(messageCounter);
+        let messageCounter = parseInt(localStorage.getItem('messageCounter') || "0");
+        messageCounter++;  // Increment the message counter by 1
+        localStorage.setItem('messageCounter', messageCounter.toString());
+        
+        displayCounterAndTimer();
         return; // Exit function early since this button's action is already handled.
     }
 
@@ -103,31 +107,35 @@ const handleButtonClick = (event) => {
     const actionButton = targetElement.closest("button.btn-neutral");
     if (actionButton && (actionButton.innerText.includes("Continue generating") || actionButton.innerText.includes("Regenerate"))) {
         console.log(`${actionButton.innerText} button clicked. Incrementing counter.`);
-        let messageCounter = parseInt(localStorage.getItem('messageCounter') || "0") + 1;
-        displayCounter(messageCounter);
+        let messageCounter = parseInt(localStorage.getItem('messageCounter') || "0");
+        messageCounter++;  // Increment the message counter by 1
+        localStorage.setItem('messageCounter', messageCounter.toString());
+        
+        displayCounterAndTimer();
     }
 };
 
 // Function to inject the message counter display into the web page.
-const injectCounterDisplay = (messageCounter) => {
-    console.log('Injecting counter display...');
-    // Create a new div element for the counter display.
+const injectCounterAndTimerDisplay = () => {
+    console.log('Injecting counter and timer display...');
+    
     const counterDiv = document.createElement('div');
     counterDiv.className = "flex items-center md:items-end mr-4";
     counterDiv.innerHTML = `
         <div data-projection-id="44" style="opacity: 1;">
-            <div id="messageCounterDisplay" class="text-sm text-gray-600 dark:text-gray-300">
-                Message exchanges: ${messageCounter}
-            </div>
+            <div id="messageCounterDisplay" class="text-md text-gray-600 dark:text-gray-300"></div> 
+
         </div>
     `;
 
-    // Insert the created counter display element at the beginning of the target div.
     const targetDiv = document.querySelector(".h-full.flex.ml-1.md\\:w-full.md\\:m-auto.md\\:mb-4.gap-0.md\\:gap-2.justify-center");
     if (targetDiv) {
         targetDiv.insertBefore(counterDiv, targetDiv.firstChild);
     }
+    
+    displayCounterAndTimer();
 };
+
 
 // Function to initialize an observer that detects new messages in the chat area.
 const initObserver = () => {
@@ -162,16 +170,15 @@ const initObserver = () => {
     }
 };
 
-// Periodically check to ensure that the message counter display is still visible on the page.
-const ensureCounterExists = () => {
+// Periodically check to ensure that the message counter and timer display are still visible on the page.
+const ensureDisplayExists = () => {
     setInterval(() => {
-        // Check if the counter display element is present.
+        // Check if the counter and timer display element is present.
         const counterDisplay = document.getElementById('messageCounterDisplay');
         if (!counterDisplay) {
-            console.log('Counter display missing! Re-injecting...');
-            const messageCounter = localStorage.getItem('messageCounter') || 0;
-            // If not present, re-inject the counter display.
-            injectCounterDisplay(messageCounter);
+            console.log('Counter and timer display missing! Re-injecting...');
+            // If not present, re-inject the counter and timer display.
+            injectCounterAndTimerDisplay();
         }
     }, CHECK_INTERVAL);
 };
@@ -202,7 +209,7 @@ function initMessageCounter() {
                 console.log('GPT-4 label found. Initializing message counter...');
                 let messageCounter = localStorage.getItem('messageCounter') || 0;
                 // Inject the counter display and initialize the observer.
-                injectCounterDisplay(messageCounter);
+                displayCounterAndTimer();
                 initObserver();
                 
                 if (!localStorage.getItem('lastResetTime')) {
@@ -214,7 +221,7 @@ function initMessageCounter() {
                 startTimer(messageCounter);
                 
                 // Ensure the counter display remains on the page.
-                ensureCounterExists();
+                ensureDisplayExists();
                 // Add the click event listener.
                 addClickListener();
             }
