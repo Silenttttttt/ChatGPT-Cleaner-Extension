@@ -7,11 +7,12 @@
   "background": {
     "service_worker": "background.js"
   },
+
   "action": {
     "default_popup": "popup.html"
   },
   "content_scripts": [{
     "matches": ["*://chat.openai.com/*"],
-    "js": ["content.js", "injectButton.js", "messageCounter.js"]
+    "js": ["injectButton.js", "messageCounter.js"]
   }]
 }

@@ -1,24 +1,10 @@
-let isActive = true;  // Initial state
-
-chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
-    if (request.toggle === true) {
-        isActive = request.newState;
-
-        if (isActive) {
-            // Find the currently active tab to execute the script
-            chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
-                if (tabs.length > 0 && tabs[0].url.includes('chat.openai.com')) {
-                    executeContentScript(tabs[0].id);
-                }
-            });
-        }
+chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
+    // Relay the message to all tabs
+    if (message.action === 'activate' || message.action === 'deactivate') {
+        chrome.tabs.query({}, function (tabs) {
+            for (let i = 0; i < tabs.length; i++) {
+                chrome.tabs.sendMessage(tabs[i].id, { action: message.action });
+            }
+        });
     }
 });
-
-function executeContentScript(tabId) {
-    chrome.scripting.executeScript({
-        target: { tabId: tabId },
-        files: ['content.js']
-    });
-}
-

@@ -60,8 +60,30 @@ const injectButtons = () => {
     }
 }
 
-// Initially call the function to inject buttons
-injectButtons();
+let isActive = false;
 
-// Set an interval to check and re-inject the buttons every 2 seconds
-setInterval(injectButtons, 2000);
+chrome.runtime.onMessage.addListener(function (message) {
+    if (message.action === "activate") {
+        isActive = true;
+        initInjectButton();  // Call the function to start your logic
+    } else if (message.action === "deactivate") {
+        isActive = false;
+    }
+});
+
+function initInjectButton() {
+    if (isActive) {
+        // Initially call the function to inject buttons
+        injectButtons();
+        // Set an interval to check and re-inject the buttons every 2 seconds
+        setInterval(injectButtons, 2000);
+    }
+}
+
+// Initial check
+chrome.storage.local.get('isActive', function (data) {
+    if (data.isActive) {
+        isActive = true;
+        initInjectButton();
+    }
+});
