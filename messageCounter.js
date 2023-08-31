@@ -91,29 +91,17 @@ const handleNewResponse = () => {
 const handleButtonClick = (event) => {
     const targetElement = event.target;
 
-    // Check if the clicked element is closest to the "Save & Submit" button.
+    // Check if the clicked element or its closest parent is the "Save & Submit" button.
     if (targetElement.closest("button.btn-primary")) {
         console.log('Save & Submit button clicked. Incrementing counter.');
-        // Get the message counter value from local storage, increment it, and then display.
         let messageCounter = parseInt(localStorage.getItem('messageCounter') || "0") + 1;
         displayCounter(messageCounter);
         return; // Exit function early since this button's action is already handled.
     }
 
-    // Attempt to find the closest parent element matching the selector.
-    const closestElement = targetElement.closest(".h-full.flex.ml-1.md\\:w-full.md\\:m-auto.md\\:mb-4.gap-0.md\\:gap-2.justify-center");
-
-    let actionButton;  // Either the "Continue generating" or "Regenerate" button.
-
-    // If the closest element is found, proceed to find the action button within it.
-    if (closestElement) {
-        actionButton = Array.from(closestElement.querySelectorAll("button")).find(btn => 
-            btn.innerText.includes("Continue generating") || btn.innerText.includes("Regenerate")
-        );
-    }
-
-    // Only execute the following block if the action button is found.
-    if (actionButton) {
+    // Check if the clicked element or its closest parent is the "Continue Generating" or "Regenerate" button.
+    const actionButton = targetElement.closest("button.btn-neutral");
+    if (actionButton && (actionButton.innerText.includes("Continue generating") || actionButton.innerText.includes("Regenerate"))) {
         console.log(`${actionButton.innerText} button clicked. Incrementing counter.`);
         let messageCounter = parseInt(localStorage.getItem('messageCounter') || "0") + 1;
         displayCounter(messageCounter);
