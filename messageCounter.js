@@ -87,7 +87,7 @@ const handleNewResponse = () => {
     }
 };
 
-// Function to handle clicks on the 'Save & Submit' and 'Continue Generating' buttons.
+// Function to handle clicks on the 'Save & Submit', 'Continue Generating', and 'Regenerate' buttons.
 const handleButtonClick = (event) => {
     const targetElement = event.target;
 
@@ -97,26 +97,27 @@ const handleButtonClick = (event) => {
         // Get the message counter value from local storage, increment it, and then display.
         let messageCounter = parseInt(localStorage.getItem('messageCounter') || "0") + 1;
         displayCounter(messageCounter);
+        return; // Exit function early since this button's action is already handled.
     }
 
     // Attempt to find the closest parent element matching the selector.
     const closestElement = targetElement.closest(".h-full.flex.ml-1.md\\:w-full.md\\:m-auto.md\\:mb-4.gap-0.md\\:gap-2.justify-center");
 
-    let continueGeneratingButton;
+    let actionButton;  // Either the "Continue generating" or "Regenerate" button.
 
-    // If the closest element is found, proceed to find the "Continue generating" button within it.
+    // If the closest element is found, proceed to find the action button within it.
     if (closestElement) {
-        continueGeneratingButton = Array.from(closestElement.querySelectorAll("button")).find(btn => btn.innerText.includes("Continue generating"));
+        actionButton = Array.from(closestElement.querySelectorAll("button")).find(btn => 
+            btn.innerText.includes("Continue generating") || btn.innerText.includes("Regenerate")
+        );
     }
 
-    // Only execute the following block if the "Continue generating" button is found.
-    if (continueGeneratingButton) {
-        console.log('Continue generating button clicked. Incrementing counter.');
+    // Only execute the following block if the action button is found.
+    if (actionButton) {
+        console.log(`${actionButton.innerText} button clicked. Incrementing counter.`);
         let messageCounter = parseInt(localStorage.getItem('messageCounter') || "0") + 1;
         displayCounter(messageCounter);
     }
-
-    
 };
 
 // Function to inject the message counter display into the web page.
