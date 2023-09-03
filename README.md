@@ -14,7 +14,7 @@ This browser extension is designed to enhance the user experience on `chat.opena
 * **background.js**: Contains the main background service worker that listens for extension state toggles and executes the extension script on the chat page accordingly.
 * **injectButton.js**: Injects custom buttons (`Provide full code` and `Cleanup Chat`) into the chat UI for enhanced user control.
 * **manifest.json**: The configuration file that dictates how the extension operates and interacts with the browser.
-* **messageCounter.js**: Implements a counter to track message exchanges with GPT-4, resetting every three hours. It also provides visual feedback on the number of messages and the next reset time.
+* **messageCounter.js**: Implements a counter to track message exchanges with GPT-4, resetting every three hours. It also provides visual feedback on the number of messages and the next reset time. Additionally, this script adds the MessageNumbersadder feature to highlight messages older than 4000 tokens.
 * **popup.html & popup.js**: Creates the popup UI allowing users to toggle the extension's functionalities on or off.
 ## Installation:
 
