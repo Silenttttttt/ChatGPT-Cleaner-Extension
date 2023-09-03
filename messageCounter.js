@@ -25,6 +25,7 @@ const checkForErrorMessage = () => {
 // Function to display the timer and message counter on the webpage
 const displayCounterAndTimer = () => {
     console.log('Displaying counter and timer...');
+
     // Get the counter display element from the webpage
     const counterDisplay = document.getElementById('messageCounterDisplay');
     const messageCounter = parseInt(localStorage.getItem('messageCounter') || "0");
@@ -32,12 +33,18 @@ const displayCounterAndTimer = () => {
     if (counterDisplay) {
         // Calculate the time the counter will reset
         const resetTime = new Date(parseInt(localStorage.getItem('lastResetTime')) + RESET_INTERVAL);
+        
         // Format the time in HH:MM:SS format
         const formattedTime = `${resetTime.getHours()}:${resetTime.getMinutes().toString().padStart(2, '0')}:${resetTime.getSeconds().toString().padStart(2, '0')}`;
-        // Set the counter display element's text content with the current message count and reset time
-        counterDisplay.textContent = `Message count: ${messageCounter}. Reset at: ${formattedTime}.`;
+        
+        // Set the inner HTML with message count and reset time in separate divs
+        counterDisplay.innerHTML = `
+            <div>Message count: ${messageCounter}</div>
+            <div>Reset at: ${formattedTime}</div>
+        `;
     }
 };
+
 
 
 // Timer function to periodically check and reset the counter
@@ -187,6 +194,115 @@ const ensureDisplayExists = () => {
 const addClickListener = () => {
     document.body.addEventListener('click', handleButtonClick);
 };
+
+
+
+
+const calculateTokens = (text) => {
+    return Math.ceil(text.length / 4);
+}
+
+
+const addMessageNumbers = () => {
+    console.log("addMessageNumbers called");
+
+    const elements = [...document.querySelectorAll("[data-testid^='conversation-turn-']")].reverse();
+    console.log("Number of elements found:", elements.length);
+
+    let tokenCount = 0;
+    let messageNumbers = [];
+
+    for (let element of elements) {
+        // Skip if the element already has a messageNumber
+        if (element.querySelector(".messageNumber")) {
+            continue;
+        }
+
+        // Extract message turn number from the data-testid attribute
+        const testId = element.getAttribute('data-testid');
+        const turnNumber = parseInt(testId.replace('conversation-turn-', ''), 10);
+
+        let targetAvatarContainer = null;
+
+        if (turnNumber % 2 === 1) { // Odd, for SVG avatar
+            targetAvatarContainer = element.querySelector("div[style*='background-color']").parentElement;
+        } else { // Even, for Image avatar
+            targetAvatarContainer = element.querySelector("img[alt='User']").parentElement;
+
+            // Rename class for the avatar container when it's an image
+            targetAvatarContainer.className = "customRelative";
+        }
+
+        if (!targetAvatarContainer) {
+            console.warn("No avatar container found for element:", element);
+            continue;
+        }
+
+        // Calculate the token count for the current element
+        tokenCount += calculateTokens(element.textContent);
+
+        // Create a new <span> element
+        let numberSpan = document.createElement("span");
+        // Add text content to the span indicating the current message number
+        numberSpan.textContent = `#${turnNumber}`;
+
+        // Add a class to the span for styling purposes
+        numberSpan.classList.add("messageNumber");
+        messageNumbers.push({ span: numberSpan, tokens: tokenCount });
+
+        // Insert the new span at the beginning of the avatar container
+        targetAvatarContainer.insertBefore(numberSpan, targetAvatarContainer.firstChild);
+    }
+
+    for (let item of messageNumbers) {
+        if (item.tokens > 4000) {
+            item.span.classList.add("fourThousandTokenMarker");
+        }
+    }
+}
+
+const injectCSS = () => {
+    // Create a new <style> element
+    const style = document.createElement('style');
+    // Define the styles for our message numbers
+    style.innerHTML = `
+        .messageNumber {
+            font-weight: bold;
+            color: white;
+            display: block;
+            margin-bottom: 5px; // Add spacing between the counter and the avatar
+            position: absolute;
+            top: 0;
+            left: 0;
+            z-index: 10; // Ensure the message number appears on top
+        }
+
+        .fourThousandTokenMarker {
+            color: yellow;
+        }
+
+        .customRelative {
+            position: relative;
+        }
+    `;
+    // Add the style to the document's head
+    document.head.appendChild(style);
+}
+
+
+
+
+
+const MessageNumbersadder = () => {
+    injectCSS();         // Inject the CSS first
+    addMessageNumbers(); // Then call the function to add message numbers
+}
+
+setInterval(MessageNumbersadder, 3000);
+
+
+
+
 
 
 let isActivetoo = false;

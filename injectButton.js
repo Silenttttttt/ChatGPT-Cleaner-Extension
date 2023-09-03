@@ -7,8 +7,9 @@ const removeTheElements = () => {
     }
 }
 
+
+
 const injectButtons = () => {
-    // Check and add "Provide full code" button
     if (!document.getElementById('customExtensionButton')) {
         const buttonDiv = document.createElement('div');
         buttonDiv.className = "flex items-center md:items-end";
@@ -35,7 +36,6 @@ const injectButtons = () => {
         }
     }
 
-    // Check and add "Cleanup Chat" button
     if (!document.getElementById('cleanupChatButton')) {
         const cleanupButtonDiv = document.createElement('div');
         cleanupButtonDiv.className = "flex items-center md:items-end";
@@ -58,6 +58,29 @@ const injectButtons = () => {
             targetDiv.appendChild(cleanupButtonDiv);
         }
     }
+
+    // if (!document.getElementById('toggleMarkerButton')) {
+    //     const markerButtonDiv = document.createElement('div');
+    //     markerButtonDiv.className = "flex items-center md:items-end";
+    //     markerButtonDiv.innerHTML = `
+    //         <div data-projection-id="44" style="opacity: 1;">
+    //             <button id="toggleMarkerButton" class="btn relative btn-neutral whitespace-nowrap -z-0 border-0 md:border" as="button">
+    //                 <div class="flex w-full gap-2 items-center justify-center">
+    //                     Toggle Marker
+    //                 </div>
+    //             </button>
+    //         </div>
+    //     `;
+
+    //     markerButtonDiv.querySelector('#toggleMarkerButton').addEventListener('click', function() {
+    //         toggleMarker();
+    //     });
+
+    //     const targetDiv = document.querySelector(".h-full.flex.ml-1.md\\:w-full.md\\:m-auto.md\\:mb-4.gap-0.md\\:gap-2.justify-center");
+    //     if (targetDiv) {
+    //         targetDiv.appendChild(markerButtonDiv);
+    //     }
+    // }
 }
 
 let isActive = false;
