@@ -19,7 +19,7 @@ This browser extension is designed to enhance the user experience on `chat.opena
 ## Installation:
 
 1. Clone this repository.
-1. Open Chrome (or any Chromium-based browser) and go to the Extensions page (`chrome://extensions/`).
+1. Open Chrome (or any Chromium-based browser, like Brave) and go to the Extensions page (`chrome://extensions/`).
 1. Enable Developer Mode.
 1. Click on `Load unpacked` and select the directory of the cloned repository.
 1. The extension should now be added to your browser!
