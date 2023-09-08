@@ -10,6 +10,33 @@ const removeTheElements = () => {
 
 
 const injectButtons = () => {
+
+
+    if (!document.getElementById('guidedResponseButton')) {
+        const guidedButtonDiv = document.createElement('div');
+        guidedButtonDiv.className = "flex items-center md:items-end";
+        guidedButtonDiv.innerHTML = `
+            <div data-projection-id="44" style="opacity: 1;">
+                <button id="guidedResponseButton" class="btn relative btn-neutral whitespace-nowrap -z-0 border-0 md:border" as="button">
+                    <div class="flex w-full gap-2 items-center justify-center">
+                        Guided Response
+                    </div>
+                </button>
+            </div>
+        `;
+
+        guidedButtonDiv.querySelector('#guidedResponseButton').addEventListener('click', function() {
+            const textarea = document.getElementById('prompt-textarea');
+            if (textarea) {
+                textarea.value += "\" Begin by outlining the requirements, followed by the proposed solution, and then implement it.";
+            }
+        });
+
+        const targetDiv = document.querySelector(".h-full.flex.ml-1.md\\:w-full.md\\:m-auto.md\\:mb-4.gap-0.md\\:gap-2.justify-center");
+        if (targetDiv) {
+            targetDiv.appendChild(guidedButtonDiv);
+        }
+    }
     if (!document.getElementById('customExtensionButton')) {
         const buttonDiv = document.createElement('div');
         buttonDiv.className = "flex items-center md:items-end";
@@ -59,28 +86,9 @@ const injectButtons = () => {
         }
     }
 
-    // if (!document.getElementById('toggleMarkerButton')) {
-    //     const markerButtonDiv = document.createElement('div');
-    //     markerButtonDiv.className = "flex items-center md:items-end";
-    //     markerButtonDiv.innerHTML = `
-    //         <div data-projection-id="44" style="opacity: 1;">
-    //             <button id="toggleMarkerButton" class="btn relative btn-neutral whitespace-nowrap -z-0 border-0 md:border" as="button">
-    //                 <div class="flex w-full gap-2 items-center justify-center">
-    //                     Toggle Marker
-    //                 </div>
-    //             </button>
-    //         </div>
-    //     `;
 
-    //     markerButtonDiv.querySelector('#toggleMarkerButton').addEventListener('click', function() {
-    //         toggleMarker();
-    //     });
 
-    //     const targetDiv = document.querySelector(".h-full.flex.ml-1.md\\:w-full.md\\:m-auto.md\\:mb-4.gap-0.md\\:gap-2.justify-center");
-    //     if (targetDiv) {
-    //         targetDiv.appendChild(markerButtonDiv);
-    //     }
-    // }
+
 }
 
 let isActive = false;
