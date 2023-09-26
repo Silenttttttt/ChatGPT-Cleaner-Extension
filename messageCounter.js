@@ -198,11 +198,12 @@ const addClickListener = () => {
 
 
 
+// Function to calculate tokens based on text length
 const calculateTokens = (text) => {
     return Math.ceil(text.length / 4);
 }
 
-
+// Main function to add turn numbers and apply the required styling
 const addMessageNumbers = () => {
     console.log("addMessageNumbers called");
 
@@ -224,14 +225,14 @@ const addMessageNumbers = () => {
 
         let targetAvatarContainer = null;
 
-        if (turnNumber % 2 === 1) { // Odd, for SVG avatar
-            targetAvatarContainer = element.querySelector("div[style*='background-color']").parentElement;
-        } else { // Even, for Image avatar
-            targetAvatarContainer = element.querySelector("img[alt='User']").parentElement;
+        // if (True) { // Odd, for SVG avatar
+        targetAvatarContainer = element.querySelector("div[style*='background-color']").parentElement;
+        // } else { // Even, for Image avatar
+        //     targetAvatarContainer = element.querySelector("img[alt='User']").parentElement;
 
-            // Rename class for the avatar container when it's an image
-            targetAvatarContainer.className = "customRelative";
-        }
+        //     // Rename class for the avatar container when it's an image
+        //     targetAvatarContainer.className = "customRelative";
+        // }
 
         if (!targetAvatarContainer) {
             console.warn("No avatar container found for element:", element);
@@ -260,6 +261,7 @@ const addMessageNumbers = () => {
         }
     }
 }
+
 
 const injectCSS = () => {
     // Create a new <style> element
@@ -293,12 +295,12 @@ const injectCSS = () => {
 
 
 
-const MessageNumbersadder = () => {
-    injectCSS();         // Inject the CSS first
-    addMessageNumbers(); // Then call the function to add message numbers
-}
+// const MessageNumbersadder = () => {
+//     injectCSS();         // Inject the CSS first
+//     addMessageNumbers(); // Then call the function to add message numbers
+// }
 
-setInterval(MessageNumbersadder, 3000);
+// setInterval(MessageNumbersadder, 3000);
 
 
 
